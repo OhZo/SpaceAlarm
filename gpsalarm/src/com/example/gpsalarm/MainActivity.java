@@ -3,17 +3,22 @@ package com.example.gpsalarm;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -23,6 +28,9 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
+	private Button mAdd;
+	Context context = this;
+	
 	private ArrayList<String> item;
 	Context mContext;
 	DBManager dbManager;
@@ -33,15 +41,33 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		
 		mContext = getApplicationContext();
 		
 		ListView lv = (ListView)findViewById(R.id.listView1);
 		dbManager = new DBManager(this);
 		reflashList(dbManager, lv, mContext);
 		
-		
+		mAdd = (Button)findViewById(R.id.insert);
+		mAdd.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+        		Intent intent = new Intent(context, SettingActivity.class);
+        		Log.i("ti","33");
+        		startActivity(intent);
+        		
+        		//?finish();
+            }
+        });
 		
 	
+	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+		ListView lv = (ListView)findViewById(R.id.listView1);
+		reflashList(dbManager, lv, mContext);
 	}
 
 	@Override
@@ -66,7 +92,55 @@ public class MainActivity extends Activity {
 		lv.setAdapter(custom_adapter);
 		
 		
+		//////갔다와서 하지뭐
+		/*
+		custom_adapter.holder.check.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+				
+				alertDialog.setTitle("삭제");
+				alertDialog.setMessage("삭제할래?");
+				alertDialog.setCancelable(true);
+				
+				
+				alertDialog.setPositiveButton(android.R.string.yes,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							
+						}
+				});
+				
+				alertDialog.setNegativeButton(android.R.string.no,
+					new DialogInterface.OnClickListener() {
+					
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							
+						}
+				});
+				
+				alertDialog.setOnCancelListener(
+					new DialogInterface.OnCancelListener() {
+						
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							
+						}
+				});
+				
+				alertDialog.show();
+				
+				return false;
+			}
+		});*/
+		
 	}
+	
 	
 }
 
@@ -78,12 +152,19 @@ class CustomAdapter extends BaseAdapter {
 	ViewHolder holder;
 	boolean[] isChecked;
 	
+	
+	
 	public CustomAdapter(Context mContext, int list, ArrayList<String> item) {
 		context = mContext;
 		layout = list;
 		adapter_item = item;
 	}
-
+	
+	
+	//Dialog dlgNormal = new Dialog(context);
+	//TODO
+	
+	
 	@Override
 	public int getCount() {
 		return adapter_item.size();
@@ -137,12 +218,18 @@ class CustomAdapter extends BaseAdapter {
 			}
 		});
 		
+				
 		if(isChecked[position]) {
 			holder.check.setChecked(true);
 		}
 		else {
 			holder.check.setChecked(false);
 		}
+		
+		
+		
+		
+		
 		
 		return convertView;
 	}
